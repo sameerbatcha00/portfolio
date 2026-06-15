@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sameer Batcha R — Full Stack Developer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300..900&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#FBF9F4;
+    --ink:#1C1B19;
+    --signal:#E8654A;
+    --sage:#6B7A5E;
+    --hairline:#D8D3C7;
+    --muted:#8A8579;
+    --sidebar-w:300px;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Inter',sans-serif;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  /* ---- layout shell ---- */
+  .shell{display:flex;min-height:100vh;}
+
+  /* ---- sidebar ---- */
+  .sidebar{
+    width:var(--sidebar-w);
+    flex-shrink:0;
+    position:fixed;top:0;left:0;height:100vh;
+    background:#fff;
+    border-right:1px solid var(--hairline);
+    padding:48px 36px;
+    display:flex;flex-direction:column;
+    overflow-y:auto;
+  }
+  .sidebar-name{font-family:'Fraunces',serif;font-size:28px;font-weight:500;line-height:1.2;}
+  .sidebar-role{
+    font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--signal);
+    text-transform:uppercase;letter-spacing:0.08em;margin-top:8px;margin-bottom:20px;
+  }
+  .sidebar-status{
+    font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--sage);
+    display:flex;align-items:center;gap:8px;margin-bottom:32px;
+  }
+  .sidebar-status::before{content:'';width:8px;height:8px;border-radius:50%;background:var(--sage);display:inline-block;animation:pulse 2.4s infinite;}
+  @keyframes pulse{0%,100%{opacity:1;}50%{opacity:.3;}}
+
+  .sidebar-nav{list-style:none;margin-bottom:auto;}
+  .sidebar-nav li{margin-bottom:6px;}
+  .sidebar-nav a{
+    display:flex;align-items:center;gap:12px;
+    font-family:'JetBrains Mono',monospace;font-size:13px;
+    color:var(--muted);text-decoration:none;padding:9px 12px;border-radius:5px;
+    transition:all .2s;
+  }
+  .sidebar-nav a .num{font-size:11px;opacity:0.5;}
+  .sidebar-nav a:hover{background:#F1EFE7;color:var(--ink);}
+  .sidebar-nav a.active{background:var(--ink);color:var(--paper);}
+  .sidebar-nav a.active .num{opacity:0.6;}
+  .sidebar-nav a:focus-visible{outline:2px solid var(--signal);outline-offset:2px;}
+
+  .sidebar-socials{display:flex;gap:14px;padding-top:28px;border-top:1px solid var(--hairline);margin-top:28px;}
+  .sidebar-socials a{
+    font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--ink);
+    text-decoration:none;border-bottom:1px solid var(--hairline);padding-bottom:2px;
+    transition:border-color .2s, color .2s;
+  }
+  .sidebar-socials a:hover{color:var(--signal);border-color:var(--signal);}
+
+  .menu-toggle{
+    display:none;position:fixed;top:18px;right:18px;z-index:100;
+    background:var(--ink);color:var(--paper);border:none;border-radius:5px;
+    font-family:'JetBrains Mono',monospace;font-size:13px;padding:10px 16px;cursor:pointer;
+  }
+
+  /* ---- main content ---- */
+  .content{margin-left:var(--sidebar-w);flex:1;max-width:760px;padding:0 56px;}
+
+  /* ---- hero ---- */
+  .hero{padding:90px 0 70px;}
+  h1{
+    font-family:'Fraunces',serif;
+    font-weight:340;
+    font-size:clamp(38px,6vw,64px);
+    line-height:1.1;
+    letter-spacing:-0.01em;
+  }
+  h1 .accent{font-style:italic;font-weight:600;color:var(--signal);}
+  .hero p.lead{
+    margin-top:24px;max-width:540px;font-size:17px;color:#4d4b46;
+  }
+  .hero-actions{display:flex;gap:14px;margin-top:36px;flex-wrap:wrap;}
+  .btn{
+    font-family:'JetBrains Mono',monospace;font-size:13px;
+    padding:13px 24px;border-radius:5px;text-decoration:none;
+    border:1px solid var(--ink);transition:all .2s;display:inline-flex;align-items:center;gap:8px;
+  }
+  .btn-primary{background:var(--ink);color:var(--paper);}
+  .btn-primary:hover{background:var(--signal);border-color:var(--signal);}
+  .btn-ghost{color:var(--ink);}
+  .btn-ghost:hover{background:var(--ink);color:var(--paper);}
+  .btn:focus-visible{outline:2px solid var(--signal);outline-offset:3px;}
+
+  /* ---- section shared ---- */
+  section{padding:70px 0;border-top:1px solid var(--hairline);}
+  .section-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:40px;flex-wrap:wrap;gap:12px;}
+  .section-tag{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--muted);letter-spacing:0.08em;text-transform:uppercase;}
+  h2{font-family:'Fraunces',serif;font-weight:400;font-size:clamp(26px,4vw,36px);}
+
+  /* ---- about ---- */
+  .about-grid p{font-size:16px;color:#4d4b46;margin-bottom:16px;}
+  .about-grid p:last-child{margin-bottom:0;}
+  .meta-list{font-family:'JetBrains Mono',monospace;font-size:13px;margin-top:28px;
+    border:1px solid var(--hairline);border-radius:6px;overflow:hidden;}
+  .meta-row{display:flex;justify-content:space-between;padding:12px 18px;border-bottom:1px solid var(--hairline);background:#fff;}
+  .meta-row:last-child{border-bottom:none;}
+  .meta-row span:first-child{color:var(--muted);}
+  .meta-row a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--signal);}
+  .meta-row a:hover{color:var(--signal);}
+
+  /* ---- experience & project cards ---- */
+  .exp-card, .project-card{
+    border:1px solid var(--hairline);
+    border-radius:6px;
+    padding:28px;
+    margin-bottom:20px;
+    background:#fff;
+    transition:border-color .25s, box-shadow .25s;
+  }
+  .exp-card:hover, .project-card:hover{border-color:var(--sage);box-shadow:0 4px 16px rgba(28,27,25,0.05);}
+  .exp-card:last-child, .project-card:last-child{margin-bottom:0;}
+  .card-head{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;margin-bottom:6px;flex-wrap:wrap;}
+  .card-head h3{font-family:'Fraunces',serif;font-size:21px;font-weight:500;}
+  .card-date{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--muted);white-space:nowrap;padding-top:4px;}
+  .card-org{font-size:14px;color:var(--sage);font-weight:600;margin-bottom:14px;}
+  .exp-card ul, .project-card ul{list-style:none;}
+  .exp-card li, .project-card li{position:relative;padding-left:20px;font-size:15px;color:#4d4b46;margin-bottom:8px;}
+  .exp-card li::before, .project-card li::before{content:'—';position:absolute;left:0;color:var(--signal);}
+  .exp-card li:last-child, .project-card li:last-child{margin-bottom:0;}
+  .tech-list{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px;}
+  .tech-list span{
+    font-family:'JetBrains Mono',monospace;font-size:11px;
+    padding:4px 10px;background:#F1EFE7;border-radius:3px;color:var(--sage);font-weight:500;
+  }
+
+  /* ---- skills ---- */
+  .skills-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:28px;}
+  .skill-cat{border:1px solid var(--hairline);border-radius:6px;padding:20px;background:#fff;}
+  .skill-cat h4{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--signal);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:14px;}
+  .skill-cat ul{list-style:none;}
+  .skill-cat li{font-size:15px;padding:6px 0;border-bottom:1px solid var(--hairline);color:#4d4b46;}
+  .skill-cat li:last-child{border-bottom:none;}
+
+  /* ---- education ---- */
+  .edu-card{
+    display:flex;justify-content:space-between;align-items:flex-start;
+    border:1px solid var(--hairline);border-radius:6px;padding:28px;background:#fff;flex-wrap:wrap;gap:20px;
+  }
+  .edu-card h3{font-family:'Fraunces',serif;font-size:21px;font-weight:500;margin-bottom:6px;}
+  .edu-card .role{color:var(--muted);font-size:14px;margin-bottom:14px;}
+  .edu-card .coursework{font-size:14px;color:#4d4b46;}
+  .edu-card .coursework b{color:var(--ink);}
+  .cgpa{
+    font-family:'JetBrains Mono',monospace;text-align:right;flex-shrink:0;
+  }
+  .cgpa .num{font-size:34px;color:var(--signal);font-weight:500;}
+  .cgpa .label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;}
+
+  /* ---- contact ---- */
+  .contact{padding-bottom:100px;}
+  .contact h2{margin-bottom:16px;}
+  .contact p{color:var(--muted);max-width:480px;margin-bottom:32px;}
+  .contact-links{display:flex;gap:16px;flex-wrap:wrap;}
+
+  footer{border-top:1px solid var(--hairline);padding:28px 0;text-align:center;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--muted);}
+
+  /* ---- responsive ---- */
+  @media (max-width:900px){
+    .sidebar{
+      transform:translateX(-100%);transition:transform .3s ease;z-index:90;
+      box-shadow:2px 0 24px rgba(0,0,0,0.08);
+    }
+    .sidebar.open{transform:translateX(0);}
+    .content{margin-left:0;padding:0 24px;max-width:100%;}
+    .menu-toggle{display:block;}
+    .hero{padding:80px 0 56px;}
+    section{padding:52px 0;}
+    .edu-card{flex-direction:column;}
+    .cgpa{text-align:left;}
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{animation:none !important;transition:none !important;scroll-behavior:auto !important;}
+  }
+</style>
+</head>
+<body>
+
+<button class="menu-toggle" id="menuToggle" aria-expanded="false" aria-controls="sidebar">menu</button>
+
+<div class="shell">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-name">Sameer Batcha R</div>
+    <div class="sidebar-role">Full Stack Developer</div>
+    <div class="sidebar-status">Open to internships &amp; full-time roles</div>
+
+    <ul class="sidebar-nav" id="sidebarNav">
+      <li><a href="#about"><span class="num">01</span> About</a></li>
+      <li><a href="#experience"><span class="num">02</span> Experience</a></li>
+      <li><a href="#projects"><span class="num">03</span> Projects</a></li>
+      <li><a href="#skills"><span class="num">04</span> Skills</a></li>
+      <li><a href="#education"><span class="num">05</span> Education</a></li>
+      <li><a href="#contact"><span class="num">06</span> Contact</a></li>
+    </ul>
+
+    <div class="sidebar-socials">
+      <a href="https://github.com/sameerbatcha00" target="_blank" rel="noopener">GitHub</a>
+      <a href="https://www.linkedin.com/in/sameer-batcha-r/" target="_blank" rel="noopener">LinkedIn</a>
+      <a href="mailto:sameerbatcha852@gmail.com">Email</a>
+    </div>
+  </aside>
+
+  <main class="content">
+    <section class="hero" style="border-top:none;">
+      <h1>Building <span class="accent">full-stack</span> products, with an eye for clean UI.</h1>
+      <p class="lead">Computer Science undergraduate specializing in React.js and Node.js, with a foundation in data structures, algorithms, and machine learning. I like shipping things people actually use.</p>
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="#projects">View projects</a>
+        <a class="btn btn-ghost" href="#contact">Get in touch</a>
+      </div>
+    </section>
+
+    <section id="about">
+      <div class="section-head">
+        <h2>About</h2>
+        <span class="section-tag">Profile</span>
+      </div>
+      <div class="about-grid">
+        <p>I'm a Computer Science and Engineering undergraduate at KGiSL Institute of Technology, Coimbatore, with strong foundations in Java, Python, data structures, and algorithms.</p>
+        <p>My focus is full-stack web development — building responsive, user-centric applications with React.js, Node.js, and modern frontend tooling. I also work in UI/UX, using Figma and Adobe XD for wireframing and prototyping.</p>
+        <p>I'm passionate about scalable software solutions and problem-solving, and I'm looking for opportunities to grow as an engineer while contributing to real products.</p>
+        <div class="meta-list">
+          <div class="meta-row"><span>Location</span><span>Coimbatore, India</span></div>
+          <div class="meta-row"><span>Email</span><a href="mailto:sameerbatcha852@gmail.com">sameerbatcha852@gmail.com</a></div>
+          <div class="meta-row"><span>Phone</span><span>+91 90257 61675</span></div>
+          <div class="meta-row"><span>GitHub</span><a href="https://github.com/sameerbatcha00" target="_blank" rel="noopener">sameerbatcha00</a></div>
+          <div class="meta-row"><span>LinkedIn</span><a href="https://www.linkedin.com/in/sameer-batcha-r/" target="_blank" rel="noopener">sameer-batcha-r</a></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="experience">
+      <div class="section-head">
+        <h2>Experience</h2>
+        <span class="section-tag">Internships</span>
+      </div>
+
+      <div class="exp-card">
+        <div class="card-head">
+          <h3>Full Stack Developer Intern</h3>
+          <span class="card-date">Aug 2024 – Jun 2025</span>
+        </div>
+        <div class="card-org">StaxTech</div>
+        <ul>
+          <li>Designed and developed web applications using HTML, CSS, JavaScript, React.js, and Node.js.</li>
+          <li>Collaborated with team members to analyze requirements and implement user-centric software solutions.</li>
+          <li>Applied problem-solving and debugging techniques to improve application performance and reliability.</li>
+          <li>Followed best practices including modular coding, version control, and responsive design principles.</li>
+        </ul>
+      </div>
+
+      <div class="exp-card">
+        <div class="card-head">
+          <h3>Frontend Development Intern</h3>
+          <span class="card-date">Jun 2025 – Jul 2025</span>
+        </div>
+        <div class="card-org">CodeAlpha</div>
+        <ul>
+          <li>Built responsive user interfaces using HTML, CSS, and JavaScript, focusing on clean structure and usability.</li>
+          <li>Translated design concepts into functional, interactive web pages.</li>
+          <li>Worked on improving layout consistency and cross-browser compatibility.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section id="projects">
+      <div class="section-head">
+        <h2>Projects</h2>
+        <span class="section-tag">Selected Work</span>
+      </div>
+
+      <div class="project-card">
+        <div class="card-head">
+          <h3>Symposium Event Management System</h3>
+          <span class="card-date">2025</span>
+        </div>
+        <div class="card-org">React.js · Node.js</div>
+        <ul>
+          <li>Built a full-stack event management platform to streamline college symposium operations, from registration to event tracking.</li>
+          <li>Reduced manual registration efforts by 80% through a digital, automated workflow.</li>
+          <li>Designed registration and tracking flows for both organizers and attendees.</li>
+        </ul>
+        <div class="tech-list">
+          <span>React.js</span><span>Node.js</span><span>JavaScript</span><span>HTML</span><span>CSS</span>
+        </div>
+      </div>
+
+      <div class="project-card">
+        <div class="card-head">
+          <h3>Language Translator System</h3>
+          <span class="card-date">2024</span>
+        </div>
+        <div class="card-org">Python · NLP</div>
+        <ul>
+          <li>Developed a Python-based language translation system supporting 10+ languages with 90% translation accuracy.</li>
+          <li>Implemented efficient text-processing techniques to improve translation accuracy and performance.</li>
+          <li>Designed an intuitive interface for seamless user interaction.</li>
+        </ul>
+        <div class="tech-list">
+          <span>Python</span><span>NLP</span>
+        </div>
+      </div>
+    </section>
+
+    <section id="skills">
+      <div class="section-head">
+        <h2>Skills</h2>
+        <span class="section-tag">Technical Skills</span>
+      </div>
+      <div class="skills-grid">
+        <div class="skill-cat">
+          <h4>Languages</h4>
+          <ul><li>Java</li><li>Python</li><li>JavaScript</li></ul>
+        </div>
+        <div class="skill-cat">
+          <h4>Frontend</h4>
+          <ul><li>HTML5</li><li>CSS3</li><li>Tailwind CSS</li><li>React.js</li></ul>
+        </div>
+        <div class="skill-cat">
+          <h4>Backend</h4>
+          <ul><li>Node.js</li><li>Express.js</li></ul>
+        </div>
+        <div class="skill-cat">
+          <h4>UI/UX</h4>
+          <ul><li>Figma</li><li>Adobe XD</li><li>Wireframing</li><li>Prototyping</li></ul>
+        </div>
+        <div class="skill-cat">
+          <h4>Tools</h4>
+          <ul><li>Git</li><li>GitHub</li><li>VS Code</li></ul>
+        </div>
+      </div>
+    </section>
+
+    <section id="education">
+      <div class="section-head">
+        <h2>Education</h2>
+        <span class="section-tag">2023 – 2027</span>
+      </div>
+      <div class="edu-card">
+        <div>
+          <h3>Bachelor of Engineering, Computer Science</h3>
+          <div class="role">KGiSL Institute of Technology, Coimbatore · Aug 2023 – Jun 2027</div>
+          <div class="coursework"><b>Coursework:</b> Data Structures, Algorithms, DBMS, Computer Systems, Machine Learning, Computer Networks</div>
+        </div>
+        <div class="cgpa">
+          <div class="num">8.01</div>
+          <div class="label">CGPA</div>
+        </div>
+      </div>
+    </section>
+
+    <section id="contact" class="contact">
+      <div class="section-head">
+        <h2>Let's build something.</h2>
+        <span class="section-tag">Contact</span>
+      </div>
+      <p>Open to internships, full-time roles, and collaborations in full-stack development and UI/UX.</p>
+      <div class="contact-links">
+        <a class="btn btn-primary" href="mailto:sameerbatcha852@gmail.com">Email me</a>
+        <a class="btn btn-ghost" href="https://github.com/sameerbatcha00" target="_blank" rel="noopener">GitHub</a>
+        <a class="btn btn-ghost" href="https://www.linkedin.com/in/sameer-batcha-r/" target="_blank" rel="noopener">LinkedIn</a>
+      </div>
+    </section>
+
+    <footer>
+      © 2026 Sameer Batcha R · Built with HTML, CSS &amp; a bit of Fraunces
+    </footer>
+  </main>
+</div>
+
+<script>
+  const toggle = document.getElementById('menuToggle');
+  const sidebar = document.getElementById('sidebar');
+  toggle.addEventListener('click', () => {
+    const open = sidebar.classList.toggle('open');
+    toggle.setAttribute('aria-expanded', open);
+    toggle.textContent = open ? 'close' : 'menu';
+  });
+
+  document.querySelectorAll('.sidebar-nav a').forEach(a => a.addEventListener('click', () => {
+    sidebar.classList.remove('open');
+    toggle.setAttribute('aria-expanded','false');
+    toggle.textContent = 'menu';
+  }));
+
+  const navLinks = document.querySelectorAll('.sidebar-nav a');
+  const sections = document.querySelectorAll('main section[id]');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if(entry.isIntersecting){
+        navLinks.forEach(link => link.classList.remove('active'));
+        const active = document.querySelector(`.sidebar-nav a[href="#${entry.target.id}"]`);
+        if(active) active.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-40% 0px -50% 0px' });
+  sections.forEach(sec => observer.observe(sec));
+</script>
+
+</body>
+</html>
